@@ -47,4 +47,4 @@ typedef struct \
 
 
 
-#endif MEMMAN_H
+#endif // MEMMAN_H

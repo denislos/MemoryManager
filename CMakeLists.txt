@@ -10,6 +10,18 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(BUILD_SHARED_LIBS ON)
 add_subdirectory(external/googletest)
 
+include_directories(memman)
+
+
+file(GLOB MEMMAN_SRCS
+    "memman/memman.c"
+)
+
+set(MEMMAN_LIB memman)
+
+add_library(${MEMMAN_LIB} SHARED ${MEMMAN_SRCS})
+target_compile_options(${MEMMAN_LIB} PUBLIC -O3 -Wall -Werror -Wextra)
+
 
 file(GLOB TEST_SRCS
     "tests/test_ci.cpp"
@@ -19,7 +31,7 @@ file(GLOB TEST_SRCS
 set(TEST_EXECUTABLE memman_test)
 
 add_executable(${TEST_EXECUTABLE} ${TEST_SRCS})
-target_link_libraries(${TEST_EXECUTABLE} PUBLIC gtest gtest_main)
+target_link_libraries(${TEST_EXECUTABLE} PUBLIC gtest gtest_main ${MEMMAN_LIB})
 target_compile_options(${TEST_EXECUTABLE} PUBLIC -Wall -Werror -Wextra)
 
 add_test(
