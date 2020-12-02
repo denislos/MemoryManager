@@ -1,0 +1,51 @@
+notifications:
+  email: false
+
+language: cpp
+dist: focal
+
+branches:
+  only:
+  - main
+
+compiler:
+  - gcc
+  - clang
+
+os:
+  - linux
+
+arch:
+  - amd64
+
+addons:
+  apt:
+    sources:
+    - sourceline: 'ppa:ubuntu-toolchain-r/test'
+    update: true
+    packages:
+    - clang-tidy-10
+    - clang++-10
+    - clang-10
+    - g++-10
+    - gcc-10
+
+
+install:
+    if [ "$TRAVIS_OS_NAME" == "linux" ]; then
+       sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 40
+       sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 40
+       if [ $CXX == clang++ ]; then
+          export CXX=clang++-10
+          export CC=clang-10
+       fi
+    fi
+
+before_script:
+  - cd $TRAVIS_BUILD_DIR/MemoryManager && mkdir build
+  - cd $TRAVIS_BUILD_DIR/MemoryManager/build && cmake ..
+
+script:
+  - cd $TRAVIS_BUILD_DIR/MemoryManager/build
+  - make
+  - ctest --verbose
