@@ -6,6 +6,7 @@
 MM_TYPE_REGISTER(int)
 MM_TYPE_REGISTER(char)
 
+
 TEST(SimpleTest, SimpleTest)
 {
     [[maybe_unused]] const auto int_index  = MM_TYPEIDNAME(int);
