@@ -10,8 +10,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(BUILD_SHARED_LIBS ON)
 add_subdirectory(external/googletest)
 
-include_directories(memman)
+include(cmake/GoogleTest.cmake)
 
+include_directories(memman)
 
 file(GLOB MEMMAN_SRCS
     "memman/memman.c"
@@ -24,7 +25,7 @@ target_compile_options(${MEMMAN_LIB} PUBLIC -O3 -Wall -Werror -Wextra)
 
 
 file(GLOB TEST_SRCS
-    "tests/test_ci.cpp"
+    "tests/test_simple.cpp"
     "tests/test_main.cpp"
 )
 
@@ -34,9 +35,6 @@ add_executable(${TEST_EXECUTABLE} ${TEST_SRCS})
 target_link_libraries(${TEST_EXECUTABLE} PUBLIC gtest gtest_main ${MEMMAN_LIB})
 target_compile_options(${TEST_EXECUTABLE} PUBLIC -Wall -Werror -Wextra)
 
-add_test(
-    NAME MemoryManagerTest
-    COMMAND ./${TEST_EXECUTABLE}
-)
+gtest_discover_tests(${TEST_EXECUTABLE})
 
 enable_testing()
