@@ -25,7 +25,13 @@ target_compile_options(${MEMMAN_LIB} PUBLIC -O3 -Wall -Werror -Wextra)
 
 
 file(GLOB TEST_SRCS
-    "tests/test_simple.cpp"
+    "tests/test_typeidname.cpp"
+    "tests/test_alloc_dealloc.cpp"
+    "tests/test_callback.cpp"
+    "tests/test_compare.cpp"
+    "tests/test_deref.cpp"
+    "tests/test_verify_empty.cpp"
+    "tests/test_verify_ptr.cpp"
     "tests/test_main.cpp"
 )
 

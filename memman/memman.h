@@ -2,12 +2,16 @@
 #define MEMMAN_H
 
 #include <stdlib.h>
+#include <stdint.h>
+
+// global counter
+extern size_t _mm_type_global_counter;
 
 // global user callback
 extern void (*_mm_callback_)(void* addr, int code);
 
 // converts a type name WITHOUT qualifiers to constant name
-#define MM_TYPEIDNAME(type) __MM_TYPEID_##type##__
+#define MM_TYPEIDNAME(type) _mm_typeidname_##type()
 #define MM_UNITNAME(type) __MM_UNIT_##type##__
 #define MM_BLOCKNAME(type) __MM_BLOCK_##type##__
 
@@ -38,13 +42,17 @@ void mm_init();
 #define MM_VERIFY_EMPTY() true
 
 // defines an integer constant for type identification, unique for each call
-#define MM_TYPE_REGISTER(type) enum{ MM_TYPEIDNAME(type)=__COUNTER__}; \
-typedef struct \
-{\
-	bool busy;\
-	int type_id;\
-	void* hdr;\
-	type data;\
+#define MM_TYPE_REGISTER(type)                              \
+static inline size_t _mm_typeidname_##type() {              \
+	static size_t type_index = _mm_type_global_counter++;   \
+	return type_index;                                      \
+}                                                           \
+typedef struct                                              \
+{                                                           \
+	bool busy;                                              \
+	int type_id;                                            \
+	void* hdr;                                              \
+	type data;                                              \
 } MM_UNITNAME(type);
 
 
