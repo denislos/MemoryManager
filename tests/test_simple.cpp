@@ -6,6 +6,7 @@
 MM_TYPE_REGISTER(int)
 MM_TYPE_REGISTER(char)
 
+__MM_UNIT_int__ int1;
 
 TEST(SimpleTest, SimpleTest)
 {
