@@ -4,6 +4,9 @@
 
 #include "memman.h"
 
+MM_TYPE_REGISTER(int);
+MM_TYPE_REGISTER(char);
+
 TEST(TestCompare, TestTentative) {
   [[maybe_unused]] int *first = MM_ALLOC(int);
   [[maybe_unused]] char *second = MM_ALLOC(char);
