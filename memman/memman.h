@@ -3,6 +3,8 @@
 
 #include <stdlib.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <stddef.h>
 
 // global user callback
 //extern void (*_mm_callback_)(void* addr, int code);
