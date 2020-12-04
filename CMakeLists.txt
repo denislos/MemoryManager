@@ -44,3 +44,14 @@ target_compile_options(${TEST_EXECUTABLE} PUBLIC -Wall -Werror -Wextra -Wno-unus
 gtest_discover_tests(${TEST_EXECUTABLE})
 
 enable_testing()
+
+
+file(GLOB DEMO_SRCS
+    "demo/demo.c"
+)
+
+set(DEMO_EXECUTABLE memman_demo)
+
+add_executable(${DEMO_EXECUTABLE} ${DEMO_SRCS})
+target_link_libraries(${DEMO_EXECUTABLE} PUBLIC ${MEMMAN_LIB})
+target_compile_options(${DEMO_EXECUTABLE} PUBLIC -Wall -Werror -Wextra)
