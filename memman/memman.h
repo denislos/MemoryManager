@@ -34,7 +34,7 @@ void mm_init();
 }
 #endif
 #define MM_DEREF(ptr, type) (check_type(ptr, type) ? (type*)ptr : _mm_callback_(0, 0))
-#define MM_ALLOC(type) 0 //returns (type*)
+#define MM_ALLOC(type) (type*)&_mm_type_global_counter
 #define MM_DEALLOC(ptr)
 #define MM_COMPARE(ptr1, ptr2) true
 #define MM_NULLPTR 0
