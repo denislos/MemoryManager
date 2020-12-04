@@ -20,15 +20,22 @@ extern void (*_mm_callback_)(void* addr, int code);
 //***********************************
 //USER INTERFACE
 //***********************************
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 void mm_attach_callback(void (*callback)(void* addr, int code));
 void mm_init();
+#ifdef __cplusplus
+}
+#endif
 #define MM_DEREF(ptr, type) (check_type(ptr, type) ? (type*)ptr : _mm_callback_(0, 0))
 #define MM_ALLOC(type) 0 //returns (type*)
 #define MM_DEALLOC(ptr)
 #define MM_COMPARE(ptr1, ptr2) true
 #define MM_NULLPTR 0
 #define MM_VERIFY_PTR(ptr, type) true
-#define MM_VERIFY_EMPTY true
+#define MM_VERIFY_EMPTY() true
 
 // defines an integer constant for type identification, unique for each call
 #define MM_TYPE_REGISTER(type) enum{ MM_TYPEIDNAME(type)=__COUNTER__}; \
