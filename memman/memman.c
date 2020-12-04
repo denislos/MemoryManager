@@ -14,13 +14,14 @@ void mm_attach_callback(void (*callback)(void* addr, int code))
 
 static void _mm_default_callback_(void* addr, int code)
 {
-	printf("Memory Manager error addr %X code %d", addr, code);
+	printf("Memory Manager error addr %p code %d", addr, code);
 	exit(code);
 }
 
 void mm_init()
 {
 	_mm_callback_ =_mm_default_callback_;
+	_mm_global_alloc_ = 0;
 }
 
 void* _mm_alloc_(size_t size, int type_id)
@@ -31,7 +32,7 @@ void* _mm_alloc_(size_t size, int type_id)
 	unit->size = size;
 	_mm_global_alloc_ += size;
 	unit->type_id = type_id;
-	return (void*)unit;
+	return (void*)MM_DATA_PTR(unit);
 }
 
 void _mm_free_(void* ptr)
@@ -55,7 +56,7 @@ void _mm_free_(void* ptr)
 	}
 
 	unit->busy = 0;
-	_mm_global_alloc_ += unit->size;
+	_mm_global_alloc_ -= unit->size;
 	free((void*)unit);
 }
 
@@ -86,21 +87,32 @@ int _mm_compare_(void* ptr1, void* ptr2)
 	return !(ptr1 || ptr2);
 }
 
-void _mm_verify_(void* ptr, int type_id)
+int _mm_verify_(void* ptr, int type_id)
 {
 	MM_UNITNAME(MM_TEMPLATE)* unit;
-	if (!ptr) return;
+	if (!ptr) return 1;
 	unit = MM_UNIT_HDR(ptr);
-	if (!unit->busy) 
+	if (!unit->busy)
+	{
 		_mm_callback_(ptr, EMPTY_PTR_OP);
+		return 0;
+	}
 	if (unit->type_id != type_id)
+	{
 		_mm_callback_(ptr, TYPE_DISREP);
-	return;
+		return 0;
+	}
+	return 1;
 }
 
-void _mm_verify_empty_()
+int _mm_verify_empty_()
 {
-	if(_mm_global_alloc_) _mm_callback_(0, ALLOCK_NOT_EMPTY);
+	if (_mm_global_alloc_)
+	{
+		_mm_callback_(0, ALLOCK_NOT_EMPTY);
+		return 0;
+	}
+	return 1;
 }
 
 #ifdef __cplusplus

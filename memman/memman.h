@@ -50,7 +50,7 @@ typedef void* MM_TEMPLATE;
 MM_UNITSTR(MM_TEMPLATE);
 
 #define MM_UNIT_HDR(ptr)  ((MM_UNITNAME(MM_TEMPLATE)*)((char*)ptr - offsetof(MM_UNITNAME(MM_TEMPLATE), data)))
-#define MM_DATA_PTR(strptr, type) (type*)(strptr ? &(((MM_UNITNAME(type)*)strptr)->data) : MM_NULLPTR)
+#define MM_DATA_PTR(strptr) (strptr ? &(((MM_UNITNAME(MM_TEMPLATE)*)strptr)->data) : MM_NULLPTR)
 
 #ifdef __cplusplus
 extern "C" {
@@ -59,8 +59,8 @@ extern "C" {
 void* _mm_alloc_(size_t size, int type_id);
 void _mm_free_(void* ptr);
 int _mm_compare_(void* ptr1, void* ptr2);
-void _mm_verify_(void* ptr, int type_id);
-void _mm_verify_empty_();
+int _mm_verify_(void* ptr, int type_id);
+int _mm_verify_empty_();
 
 //***********************************
 //USER INTERFACE
@@ -72,8 +72,8 @@ void mm_init();
 }
 #endif
 
-#define MM_DEREF(ptr, type) (check_type(ptr, type) ? (type*)ptr : _mm_callback_(0, 0))
-#define MM_ALLOC(type) MM_DATA_PTR(_mm_alloc_(sizeof(MM_UNITNAME(type)), MM_TYPEIDNAME(type)), type)
+#define MM_DEREF(ptr, type) (type*)(_mm_verify_(ptr, MM_TYPEIDNAME(type)) ? ptr : MM_NULLPTR)
+#define MM_ALLOC(type) ((type*)_mm_alloc_(sizeof(MM_UNITNAME(type)), MM_TYPEIDNAME(type)))
 #define MM_DEALLOC(ptr) _mm_free_((void*)ptr)
 #define MM_COMPARE(ptr1, ptr2) _mm_compare_(ptr1, ptr2)
 #define MM_VERIFY_PTR(ptr, type) _mm_verify_(ptr, MM_TYPEIDNAME(type))
