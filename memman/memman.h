@@ -6,11 +6,6 @@
 #include <stdio.h>
 #include <stddef.h>
 
-extern size_t _mm_type_global_counter;
-
-// global user callback
-//extern void (*_mm_callback_)(void* addr, int code);
-//extern unsigned int _mm_global_alloc_;
 
 // converts a type name WITHOUT qualifiers to constant name
 #define MM_TYPEIDNAME(type) _mm_typeidname_##type()
@@ -57,6 +52,7 @@ MM_UNITSTR(MM_TEMPLATE);
 #ifdef __cplusplus
 extern "C" {
 #endif
+extern size_t _mm_type_global_counter;
 
 void* _mm_alloc_(size_t size, int type_id);
 void _mm_free_(void* ptr);

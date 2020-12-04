@@ -6,6 +6,7 @@ extern "C" {
 
 static void (*_mm_callback_)(void* addr, int code);
 static unsigned int _mm_global_alloc_;
+size_t _mm_type_global_counter = 0u;
 
 void mm_attach_callback(void (*callback)(void* addr, int code))
 {
