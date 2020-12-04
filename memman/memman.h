@@ -71,7 +71,7 @@ void mm_init();
 #endif
 
 #define MM_DEREF(ptr, type) (check_type(ptr, type) ? (type*)ptr : _mm_callback_(0, 0))
-#define MM_ALLOC(type) MM_DATA_PTR(_mm_alloc_(sizeof(MM_UNITNAME(type)), type)
+#define MM_ALLOC(type) MM_DATA_PTR(_mm_alloc_(sizeof(MM_UNITNAME(type)), MM_TYPEIDNAME(type)), type)
 #define MM_DEALLOC(ptr) _mm_free_((void*)ptr)
 #define MM_COMPARE(ptr1, ptr2) _mm_compare_(ptr1, ptr2)
 #define MM_VERIFY_PTR(ptr, type) _mm_verify_(ptr, MM_TYPEIDNAME(type))

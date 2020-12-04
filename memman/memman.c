@@ -14,6 +14,7 @@ void mm_attach_callback(void (*callback)(void* addr, int code))
 
 static void _mm_default_callback_(void* addr, int code)
 {
+	printf("Memory Manager error addr %X code %d", addr, code);
 	exit(code);
 }
 
