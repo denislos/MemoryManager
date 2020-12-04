@@ -9,10 +9,16 @@ MM_TYPE_REGISTER(char);
 
 typedef struct {
     int a;
-    int b;
+    int b[5];
+    double v;
+    struct {
+        float q;
+    } my_struct;
 } custom_type_t;
 
 MM_TYPE_REGISTER(custom_type_t);
+
+
 
 TEST(TestTypeidname, TestIntSameId)
 {
@@ -32,4 +38,22 @@ TEST(TestTypeidname, TestIntCharDifferentId)
 TEST(TestTypeidname, TestIntCustomDifferentId)
 {
     ASSERT_TRUE(MM_TYPEIDNAME(int) != MM_TYPEIDNAME(custom_type_t));
+}
+
+TEST(TestTypeidname, TestTypeidnameNotChangingWithInterference)
+{
+    const auto initial_value = MM_TYPEIDNAME(custom_type_t);
+    [[maybe_unused]] const auto interference = MM_TYPEIDNAME(int);
+    const auto final_value = MM_TYPEIDNAME(custom_type_t);
+
+    ASSERT_EQ(initial_value, final_value);
+}
+
+TEST(TestTypeidname, TestTypeidnameNotChangingMultiple)
+{
+    const auto initial_value = MM_TYPEIDNAME(custom_type_t);
+    
+    const size_t num_iterations = 10;
+    for (size_t i = 0; i < num_iterations; ++i)
+        ASSERT_EQ(initial_value, MM_TYPEIDNAME(custom_type_t)); 
 }
