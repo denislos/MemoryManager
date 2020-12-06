@@ -18,6 +18,10 @@
 #define MM_BLOCKSIZE MM_BLOCKSIZE_DEFAULT
 #endif
 
+#ifndef MM_CANARY_VAL
+#define MM_CANARY_VAL 0x55555555
+#endif
+
 #define MM_NULLPTR 0
 
 enum
@@ -26,6 +30,7 @@ enum
 	TYPE_DISREP,
 	EMPTY_PTR_OP,
 	ALLOCK_NOT_EMPTY,
+	CANARY_DEAD,
 };
 
 typedef struct
@@ -40,6 +45,7 @@ typedef struct
 	int type_id;\
 	__mm_block__* hdr;\
 	size_t size;\
+	int canary;\
 	type data;\
 } MM_UNITNAME(type);
 
