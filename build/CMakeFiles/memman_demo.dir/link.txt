@@ -1,0 +1,1 @@
+/usr/bin/cc    CMakeFiles/memman_demo.dir/demo/demo.c.o  -o memman_demo  -Wl,-rpath,/home/alekseyp/MemoryManager/build libmemman.so 
