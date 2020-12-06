@@ -31,6 +31,7 @@ void* _mm_alloc_(size_t size, int type_id)
 	if (!unit) return 0;
 	unit->busy = 1;
 	unit->size = size;
+	unit->canary = MM_CANARY_VAL;
 	_mm_global_alloc_ += size;
 	unit->type_id = type_id;
 	return (void*)MM_DATA_PTR(unit);
