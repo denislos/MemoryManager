@@ -50,18 +50,19 @@ void _mm_free_(void* ptr)
 		_mm_callback_(ptr, EMPTY_PTR_OP);
 		return;
 	}
-	if (unit->canary != MM_CANARY_VAL)
-	{
-		_mm_callback_(ptr, CANARY_DEAD);
-		return;
-	}
 	if(!unit->busy)
 	{
 		_mm_callback_(ptr, EMPTY_PTR_OP);
 		return;
 	}
-
+	if (unit->canary != MM_CANARY_VAL)
+	{
+		_mm_callback_(ptr, CANARY_DEAD);
+		return;
+	}
 	unit->busy = 0;
+	unit->type_id = -1;
+	unit->canary = 0;
 	_mm_global_alloc_ -= unit->size;
 	free((void*)unit);
 }
@@ -73,16 +74,6 @@ int _mm_compare_(void* ptr1, void* ptr2)
 	{
 		unit1 = MM_UNIT_HDR(ptr1);
 		unit2 = MM_UNIT_HDR(ptr2);
-		if (unit1->canary != MM_CANARY_VAL)
-		{
-			_mm_callback_(ptr1, CANARY_DEAD);
-			return 0;
-		}
-		if (unit2->canary != MM_CANARY_VAL)
-		{
-			_mm_callback_(ptr2, CANARY_DEAD);
-			return 0;
-		}
 		if (unit1->type_id != unit2->type_id)
 		{
 			_mm_callback_(ptr1, TYPE_DISREP);
@@ -98,6 +89,17 @@ int _mm_compare_(void* ptr1, void* ptr2)
 			_mm_callback_(ptr2, EMPTY_PTR_OP);
 			return 0;
 		}
+		if (unit1->canary != MM_CANARY_VAL)
+		{
+			_mm_callback_(ptr1, CANARY_DEAD);
+			return 0;
+		}
+		if (unit2->canary != MM_CANARY_VAL)
+		{
+			_mm_callback_(ptr2, CANARY_DEAD);
+			return 0;
+		}
+
 		return ptr1 == ptr2;
 	}
 	return !(ptr1 || ptr2);
@@ -109,21 +111,24 @@ int _mm_verify_(void* ptr, int type_id)
 	if (!ptr) return 1;
 	unit = MM_UNIT_HDR(ptr);
 
-	if (unit->canary != MM_CANARY_VAL)
-	{
-		_mm_callback_(ptr, CANARY_DEAD);
-		return 0;
-	}
 	if (!unit->busy)
 	{
 		_mm_callback_(ptr, EMPTY_PTR_OP);
 		return 0;
 	}
+
 	if (unit->type_id != type_id)
 	{
 		_mm_callback_(ptr, TYPE_DISREP);
 		return 0;
 	}
+
+	if (unit->canary != MM_CANARY_VAL)
+	{
+		_mm_callback_(ptr, CANARY_DEAD);
+		return 0;
+	}
+
 	return 1;
 }
 
