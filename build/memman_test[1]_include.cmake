@@ -1,5 +1,0 @@
-if(EXISTS "/home/alekseyp/MemoryManager/build/memman_test[1]_tests.cmake")
-  include("/home/alekseyp/MemoryManager/build/memman_test[1]_tests.cmake")
-else()
-  add_test(memman_test_NOT_BUILT memman_test_NOT_BUILT)
-endif()
