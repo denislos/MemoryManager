@@ -11,6 +11,7 @@
 
 MM_TYPE_REGISTER(int);
 MM_TYPE_REGISTER(char);
+MM_TYPE_REGISTER(double);
 
 typedef struct {
     double s[50];
@@ -23,34 +24,78 @@ typedef struct {
     } u[3];
 } custom_type_t;
 
-MM_TYPE_REGISTER(custom_type_t);
+typedef struct {
+    double s[50];
+    struct {
+        struct {
+            int a[10];
+        } m;
+        float f;
+        int k;
+    } u[3];
+} custom_type_y;
 
+MM_TYPE_REGISTER(custom_type_t);
+MM_TYPE_REGISTER(custom_type_y);
 
 TEST(TestAllocDealloc, TestAllocDeallocIntSimple)
 {
-    [[maybe_unused]] int *ptr = MM_ALLOC(int);
+    int *ptr = MM_ALLOC(int);
 
     ASSERT_TRUE(ptr != NULL);
 
     MM_DEALLOC(ptr);
 }
 
-TEST(TestAllocDealloc, TestAllocDeallocCharSimple) 
+TEST(TestAllocDealloc, TestAllocDeallocCharSimple)
 {
-    [[maybe_unused]] char *ptr = MM_ALLOC(char);
+    char *ptr = MM_ALLOC(char);
 
     ASSERT_TRUE(ptr != NULL);
 
     MM_DEALLOC(ptr);
 }
 
-TEST(TestAllocDealloc, TestAllocDeallocCustomSimpleNotNull)
+TEST(TestAllocDealloc, TestAllocDeallocDoubleSimple)
 {
-    [[maybe_unused]] custom_type_t *ptr = MM_ALLOC(custom_type_t);
-    
+    double *ptr = MM_ALLOC(double);
+
     ASSERT_TRUE(ptr != NULL);
 
     MM_DEALLOC(ptr);
+}
+
+TEST(TestAllocDealloc, TestAllocDeallocCustomSimple1NotNull)
+{
+    custom_type_t *ptr = MM_ALLOC(custom_type_t);
+
+    ASSERT_TRUE(ptr != NULL);
+
+    MM_DEALLOC(ptr);
+}
+
+TEST(TestAllocDealloc, TestAllocDeallocCustomSimple2NotNull)
+{
+    custom_type_y *ptr = MM_ALLOC(custom_type_y);
+
+    ASSERT_TRUE(ptr != NULL);
+
+    MM_DEALLOC(ptr);
+}
+
+TEST(TestAllocDealloc, TestAllocDeallocIntMultipleNotNull)
+{
+    constexpr const size_t num_iterations = 10000;
+    int* ptr_array[num_iterations];
+
+    for (size_t i = 0; i < num_iterations; ++i)
+        ptr_array[i] = MM_ALLOC(int);
+
+    for (size_t i = 0; i < num_iterations; ++i)
+        ASSERT_TRUE(ptr_array[i] != NULL);
+
+    for (size_t i = 0; i < num_iterations; ++i)
+        MM_DEALLOC(ptr_array[i]);
 }
 
 TEST(TestAllocDealloc, TestAllocDeallocCustomMultipleNotNull)
@@ -76,9 +121,9 @@ TEST(TestAllocDealloc, TestAllocDeallocCustomMultipleAllDifferent)
     for (size_t i = 0; i < num_iterations; ++i)
         ptr_set.insert(MM_ALLOC(custom_type_t));
 
-    /* ASSERT_EQ(ptr_set.size(), num_iterations); */ // fix me
+    ASSERT_EQ(ptr_set.size(), num_iterations);
 
-    for ([[maybe_unused]] auto ptr : ptr_set) // fix me
+    for (auto ptr : ptr_set)
         MM_DEALLOC(ptr);
 }
 
@@ -90,16 +135,39 @@ TEST(TestAllocDealloc, TestAllocDeallocCustomIntMultipleIntertwiningNotNull)
 
     for (size_t i = 0; i < num_iterations; ++i)
         if (i & 1)
-            int_ptr_array.push_back((int*)MM_ALLOC(int)); // FIX ME
+            int_ptr_array.push_back(MM_ALLOC(int));
         else
-            custom_ptr_array.push_back((custom_type_t*)MM_ALLOC(custom_type_t)); // FIX ME
+            custom_ptr_array.push_back(MM_ALLOC(custom_type_t));
 
-    for ([[maybe_unused]]auto ptr : int_ptr_array) { // fix me
+    for (auto ptr : int_ptr_array) {
         ASSERT_TRUE(ptr != NULL);
         MM_DEALLOC(ptr);
     }
 
-    for ([[maybe_unused]]auto ptr : custom_ptr_array) { // fix me
+    for (auto ptr : custom_ptr_array) {
+        ASSERT_TRUE(ptr != NULL);
+        MM_DEALLOC(ptr);
+    }
+}
+
+TEST(TestAllocDealloc, TestAllocDeallocCustomCustomMultipleIntertwiningNotNull)
+{
+    constexpr const size_t num_iterations = 10000;
+    std::vector<custom_type_t*> custom_t_ptr_array;
+    std::vector<custom_type_y*> custom_y_ptr_array;
+
+    for (size_t i = 0; i < num_iterations; ++i)
+        if (i & 1)
+            custom_t_ptr_array.push_back(MM_ALLOC(custom_type_t));
+        else
+            custom_y_ptr_array.push_back(MM_ALLOC(custom_type_y));
+
+    for (auto ptr : custom_t_ptr_array) {
+        ASSERT_TRUE(ptr != NULL);
+        MM_DEALLOC(ptr);
+    }
+
+    for (auto ptr : custom_y_ptr_array) {
         ASSERT_TRUE(ptr != NULL);
         MM_DEALLOC(ptr);
     }
