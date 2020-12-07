@@ -4,7 +4,7 @@
 
 ## API
 
-#### `Callback funtion` ####
+#### `Callback funсtion` ####
 If any runtime problem appears, this function called to signal user about error. Default function just prints address and error code, after which calls exit(). 
 
 You can change it by calling `void mm_attach_callback(void (*callback)(void* addr, int code))`.
