@@ -144,7 +144,7 @@ int _mm_compare_(void* ptr1, void* ptr2)
 int _mm_verify_(void* ptr, int type_id)
 {
 	MM_UNITNAME(MM_TEMPLATE)* unit;
-	if (!ptr) return 1;
+	if (!ptr) return 0;
 	unit = MM_UNIT_HDR(ptr);
 
 	if (!unit->busy)
@@ -161,6 +161,7 @@ int _mm_verify_(void* ptr, int type_id)
 
 	if (unit->canary != MM_CANARY_VAL)
 	{
+        printf("AAAA\n");
 		_mm_callback_(ptr, CANARY_DEAD);
 		return 0;
 	}
