@@ -103,7 +103,7 @@ TEST(TestCallback, verifyEmpty) {
   mm_attach_callback(return_func);
   char *data2 = MM_ALLOC(char);
   // wft not dead
-  EXPECT_EXIT([[maybe_unused]]bool d = MM_VERIFY_EMPTY,
+  EXPECT_EXIT([[maybe_unused]]bool d = MM_VERIFY_EMPTY(),
   testing::ExitedWithCode(0), "Error");
   MM_DEALLOC(data2);
 }

@@ -22,7 +22,7 @@
 #define MM_CANARY_VAL 0x55555555
 #endif
 
-#define MM_NULLPTR 0
+#define MM_NULLPTR NULL
 
 enum
 {
@@ -82,7 +82,7 @@ void mm_init();
 #define MM_DEALLOC(ptr) _mm_free_((void*)ptr)
 #define MM_COMPARE(ptr1, ptr2) _mm_compare_(ptr1, ptr2)
 #define MM_VERIFY_PTR(ptr, type) _mm_verify_(ptr, MM_TYPEIDNAME(type))
-#define MM_VERIFY_EMPTY _mm_verify_empty_()
+#define MM_VERIFY_EMPTY() _mm_verify_empty_()
 
 // defines an integer constant for type identification, unique for each call
 #define MM_TYPE_REGISTER(type) \
