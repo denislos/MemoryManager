@@ -49,8 +49,8 @@ TEST(TestCallback, TestWrongCompare1) {
   int *data2 = MM_ALLOC(int);
   MM_DEALLOC(data1);
   // wtf fail
-  //EXPECT_EXIT([[maybe_unused]]bool d = MM_COMPARE(data1, data2),
-  //testing::ExitedWithCode(0), "Error");
+  EXPECT_EXIT([[maybe_unused]]bool d = MM_COMPARE(data1, data2),
+  testing::ExitedWithCode(0), "Error");
   MM_DEALLOC(data2);
 }
 TEST(TestCallback, TestWrongCompare2) {
@@ -60,8 +60,8 @@ TEST(TestCallback, TestWrongCompare2) {
   int *data2 = MM_ALLOC(int);
   MM_DEALLOC(data2);
   // wft fail
-  //EXPECT_EXIT([[maybe_unused]]bool d = MM_COMPARE(data1, data2),
-  //testing::ExitedWithCode(0), "Error");
+  EXPECT_EXIT([[maybe_unused]]bool d = MM_COMPARE(data1, data2),
+  testing::ExitedWithCode(0), "Error");
   MM_DEALLOC(data1);
 }
 TEST(TestCallback, TestWrongCompare3) {
@@ -69,8 +69,8 @@ TEST(TestCallback, TestWrongCompare3) {
   mm_attach_callback(return_func);
   int *data1 = MM_ALLOC(int);
   char *data2 = MM_ALLOC(char);
-  //EXPECT_EXIT([[maybe_unused]] bool d = MM_COMPARE(data1, data2),
-  //            testing::ExitedWithCode(0), "Error");
+  EXPECT_EXIT([[maybe_unused]] bool d = MM_COMPARE(data1, data2),
+              testing::ExitedWithCode(0), "Error");
   MM_DEALLOC(data1);
   MM_DEALLOC(data2);
 }

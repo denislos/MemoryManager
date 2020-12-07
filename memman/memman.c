@@ -115,7 +115,6 @@ int _mm_compare_(void* ptr1, void* ptr2)
 			_mm_callback_(ptr1, CANARY_DEAD);
 			return 0;
 		}
-		return ptr1 == ptr2;
 	}
 	if (ptr2)
 	{
