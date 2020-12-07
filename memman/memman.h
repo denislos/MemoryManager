@@ -6,11 +6,11 @@
 #include "memman_internal.h"
 
 // defines an integer constant for type identification, unique for each call
-#define MM_TYPE_REGISTER(type)                                                        \
-static inline size_t _mm_typeidname_##type() {                                        \
+#define MM_TYPE_REGISTER(type)                                                            \
+static inline size_t _mm_typeidname_##type() {                                            \
 	static size_t type_index = 0;                                                     \
 	return (type_index == 0) ? (type_index = ++_mm_type_global_counter) : type_index; \
-}                                                                                     \
+}                                                                                         \
 MM_UNITSTR(type);
 
 
