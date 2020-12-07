@@ -48,6 +48,7 @@ enable_testing()
 
 file(GLOB DEMO_SRCS
     "demo/demo.c"
+    "demo/tree.c"
 )
 
 set(DEMO_EXECUTABLE memman_demo)
