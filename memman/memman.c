@@ -5,7 +5,7 @@ extern "C" {
 #endif
 
 static void (*_mm_callback_)(void* addr, int code);
-static unsigned int _mm_global_alloc_, _mm_really_alloc_;
+static unsigned int _mm_global_alloc_, _mm_really_alloc_ = 0;
 static __mm_block__* _mm_last_allocated_block_ = 0;
 size_t _mm_type_global_counter = 0u;
 
@@ -24,7 +24,7 @@ void mm_init()
 {
 	_mm_callback_ =_mm_default_callback_;
 	_mm_global_alloc_ = 0;
-	_mm_really_alloc_ = 0;
+	//_mm_really_alloc_ = 0;
 	_mm_last_allocated_block_ = 0;
 }
 
@@ -87,9 +87,9 @@ void _mm_free_(void* ptr)
 	unit->canary = 0;
 	if (!(workblock->units_used))
 	{
+		if (_mm_last_allocated_block_ == workblock) _mm_last_allocated_block_ = 0;
 		free(workblock);
 		_mm_really_alloc_ -= sizeof(__mm_block__);
-		if (_mm_last_allocated_block_ == workblock) _mm_last_allocated_block_ = 0;
 	}
 }
 
@@ -160,7 +160,7 @@ int _mm_verify_(void* ptr, int type_id)
 
 int _mm_verify_empty_()
 {
-	if (_mm_global_alloc_)
+	if (_mm_global_alloc_ || _mm_really_alloc_)
 	{
 		_mm_callback_(0, ALLOCK_NOT_EMPTY);
 		return 0;
