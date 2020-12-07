@@ -35,8 +35,14 @@ typedef struct {
     } u[3];
 } custom_type_y;
 
+typedef struct {
+    char s[10000];
+    int a;
+} custom_big;
+
 MM_TYPE_REGISTER(custom_type_t);
 MM_TYPE_REGISTER(custom_type_y);
+MM_TYPE_REGISTER(custom_big);
 
 TEST(TestAllocDealloc, TestAllocDeallocIntSimple)
 {
@@ -61,6 +67,27 @@ TEST(TestAllocDealloc, TestAllocDeallocDoubleSimple)
     double *ptr = MM_ALLOC(double);
 
     ASSERT_TRUE(ptr != NULL);
+
+    MM_DEALLOC(ptr);
+}
+
+TEST(TestAllocDealloc, TestAllocDeallocTooBig)
+{
+
+    EXPECT_EXIT([[maybe_unused]] auto a = MM_ALLOC(custom_big), testing::ExitedWithCode(ALLOCK_TOO_LARGE),
+              "");
+}
+
+TEST(TestAllocDealloc, TestAllocDeallocNoValid)
+{
+    custom_type_t *ptr = MM_ALLOC(custom_type_t);
+
+    ASSERT_TRUE(ptr != NULL);
+
+    custom_type_t * ptr_new = ptr + 5;
+
+    EXPECT_EXIT(MM_DEALLOC(ptr_new), testing::ExitedWithCode(EMPTY_PTR_OP),
+              "");
 
     MM_DEALLOC(ptr);
 }
