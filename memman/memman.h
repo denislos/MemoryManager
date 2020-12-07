@@ -12,7 +12,7 @@
 #define MM_UNITNAME(type) __MM_UNIT_##type##__
 #define MM_BLOCKNAME(type) __MM_BLOCK_##type##__
 
-#define MM_BLOCKSIZE_DEFAULT 1000
+#define MM_BLOCKSIZE_DEFAULT 4096
 
 #ifndef MM_BLOCKSIZE
 #define MM_BLOCKSIZE MM_BLOCKSIZE_DEFAULT
@@ -31,6 +31,7 @@ enum
 	EMPTY_PTR_OP,
 	ALLOCK_NOT_EMPTY,
 	CANARY_DEAD,
+	ALLOCK_TOO_LARGE,
 };
 
 typedef struct

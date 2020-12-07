@@ -32,6 +32,11 @@ void mm_init()
 void* _mm_alloc_(size_t size, int type_id)
 {
 	__mm_block__* workblock;
+	if (size > MM_BLOCKSIZE)
+	{
+		_mm_callback_(0, ALLOCK_TOO_LARGE);
+		return 0;
+	}
 	if (!_mm_last_allocated_block_ || (MM_BLOCKSIZE - _mm_last_allocated_block_->cur_offset < size))
 	{
 		workblock = (__mm_block__*)malloc(sizeof(__mm_block__));
@@ -96,24 +101,13 @@ void _mm_free_(void* ptr)
 
 int _mm_compare_(void* ptr1, void* ptr2)
 {
-	MM_UNITNAME(MM_TEMPLATE) *unit1, *unit2;
-	if (ptr1 && ptr2)
+	MM_UNITNAME(MM_TEMPLATE) *unit1 = 0, *unit2 = 0;
+	if (ptr1)
 	{
 		unit1 = MM_UNIT_HDR(ptr1);
-		unit2 = MM_UNIT_HDR(ptr2);
-		if (unit1->type_id != unit2->type_id)
-		{
-			_mm_callback_(ptr1, TYPE_DISREP);
-			return 0;
-		}
 		if (!unit1->busy)
 		{
 			_mm_callback_(ptr1, EMPTY_PTR_OP);
-			return 0;
-		}
-		if (!unit2->busy)
-		{
-			_mm_callback_(ptr2, EMPTY_PTR_OP);
 			return 0;
 		}
 		if (unit1->canary != MM_CANARY_VAL)
@@ -121,15 +115,31 @@ int _mm_compare_(void* ptr1, void* ptr2)
 			_mm_callback_(ptr1, CANARY_DEAD);
 			return 0;
 		}
+		return ptr1 == ptr2;
+	}
+	if (ptr2)
+	{
+		unit2 = MM_UNIT_HDR(ptr2);
+		if (!unit2->busy)
+		{
+			_mm_callback_(ptr2, EMPTY_PTR_OP);
+			return 0;
+		}
 		if (unit2->canary != MM_CANARY_VAL)
 		{
 			_mm_callback_(ptr2, CANARY_DEAD);
 			return 0;
 		}
-
-		return ptr1 == ptr2;
 	}
-	return !(ptr1 || ptr2);
+	if (ptr1 && ptr2)
+	{
+		if (unit1->type_id != unit2->type_id)
+		{
+			_mm_callback_(ptr1, TYPE_DISREP);
+			return 0;
+		}
+	}
+	return (ptr1 == ptr2);
 }
 
 int _mm_verify_(void* ptr, int type_id)
