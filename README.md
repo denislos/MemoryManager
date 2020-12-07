@@ -65,6 +65,10 @@ char* c = MM_ALLOC(char);
 MM_VERIFY_EMPTY(); // Error: memory leakage has been detected, termination routine will be invoked
 ````
 
+## Demo
+
+You can find application of `memman` library to parsing AST-like in demo folder
+
 ## Integration
 
 In order to integrate `memman` C library into their project, the one should include `memman.h` header file and link with `memman` shared library. 
