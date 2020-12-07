@@ -82,7 +82,7 @@ MM_VERIFY_EMPTY(); // Error: memory leakage has been detected, callback routine 
 
 ## Demo
 
-You can find application of `memman` library to parsing a toy-tree in `demo` folder.
+You can find application of `memman` library to parsing a toy-tree (DFS) in `demo` folder.
 
 ## Integration
 
