@@ -89,6 +89,7 @@ void _mm_free_(void* ptr)
 	{
 		free(workblock);
 		_mm_really_alloc_ -= sizeof(__mm_block__);
+		if (_mm_last_allocated_block_ == workblock) _mm_last_allocated_block_ = 0;
 	}
 }
 
