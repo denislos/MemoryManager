@@ -41,9 +41,10 @@ int*  a = MM_ALLOC(int);
 int*  b = MM_ALLOC(int);
 char* c = MM_ALLOC(char);
 
-MM_COMPARE(a, a); // returns 1
-MM_COMPARE(a, b); // returns 0
-MM_COMPARE(a, c); // Error: termination routine is called
+MM_COMPARE(a, a);          // returns 1
+MM_COMPARE(a, b);          // returns 0
+MM_COMPARE(a, MM_NULLPTR); // returns 0
+MM_COMPARE(a, c);          // Error: termination routine is called
 ````
 
 #### `int MM_VERIFY_PTR(ptr, type)` ####
