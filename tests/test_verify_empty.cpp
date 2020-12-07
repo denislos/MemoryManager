@@ -1,11 +1,17 @@
 
 
-#include <gtest/gtest.h>
+#include "gtest/gtest.h"
 
 #include "memman.h"
 
 MM_TYPE_REGISTER(int);
 MM_TYPE_REGISTER(char);
+
+
+static void test_callback_([[maybe_unused]] void* addr, [[maybe_unused]] int code)
+{
+    // Do nothing
+}
 
 typedef struct {
     char arr[MM_BLOCKSIZE/2];
@@ -15,6 +21,7 @@ MM_TYPE_REGISTER(type_big_t);
 
 TEST(TestVerifyEmpty, TestSimple)
 {
+    mm_attach_callback(test_callback_);
     ASSERT_EQ(MM_VERIFY_EMPTY(), 1);
 
     int* int_ptr = MM_ALLOC(int);
@@ -30,6 +37,7 @@ TEST(TestVerifyEmpty, TestSimple)
 
 TEST(TestVerifyEmpty, TestOneBlock)
 {
+    mm_attach_callback(test_callback_);
     constexpr size_t NUM_ELEMENTS = MM_BLOCKSIZE/sizeof(char);
 
     char* arr[NUM_ELEMENTS];
@@ -49,6 +57,7 @@ TEST(TestVerifyEmpty, TestOneBlock)
 
 TEST(TestVerifyEmpty, TestArraysBig)
 {
+    mm_attach_callback(test_callback_);
     constexpr size_t NUM_ELEMENTS = 100000;
 
     int* arr_int[NUM_ELEMENTS];
@@ -71,6 +80,7 @@ TEST(TestVerifyEmpty, TestArraysBig)
 
 TEST(TestVerifyEmpty, TestBigData)
 {
+    mm_attach_callback(test_callback_);
     constexpr size_t NUM_ELEMENTS = 1000;
 
     type_big_t* arr[NUM_ELEMENTS];
