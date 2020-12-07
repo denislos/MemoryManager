@@ -65,6 +65,10 @@ char* c = MM_ALLOC(char);
 MM_VERIFY_EMPTY(); // Error: memory leakage has been detected, termination routine will be invoked
 ````
 
+## Integration
+
+In order to integrate `memman` C library into their project, the one should include `memman.h` header file and link with `memman` shared library. 
+
 ## Requirements
 *   [Cmake](https://cmake.org/) >= 3.10
 *   C++ Compiler supporting C++17 standard
