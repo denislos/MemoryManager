@@ -67,7 +67,7 @@ MM_VERIFY_EMPTY(); // Error: memory leakage has been detected, termination routi
 
 ## Demo
 
-You can find application of `memman` library to parsing AST-like in demo folder
+You can find application of `memman` library to parsing AST-like in `demo` folder.
 
 ## Integration
 
