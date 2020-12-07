@@ -5,7 +5,8 @@ extern "C" {
 #endif
 
 static void (*_mm_callback_)(void* addr, int code);
-static unsigned int _mm_global_alloc_;
+static unsigned int _mm_global_alloc_, _mm_really_alloc_;
+static __mm_block__* _mm_last_allocated_block_ = 0;
 size_t _mm_type_global_counter = 0u;
 
 void mm_attach_callback(void (*callback)(void* addr, int code))
@@ -23,23 +24,40 @@ void mm_init()
 {
 	_mm_callback_ =_mm_default_callback_;
 	_mm_global_alloc_ = 0;
+	_mm_really_alloc_ = 0;
 }
 
 void* _mm_alloc_(size_t size, int type_id)
 {
-	MM_UNITNAME(MM_TEMPLATE)* unit = (MM_UNITNAME(MM_TEMPLATE) * )malloc(size);
-	if (!unit) return 0;
+	__mm_block__* workblock;
+	if (!_mm_last_allocated_block_ || (MM_BLOCKSIZE - _mm_last_allocated_block_->cur_offset < size))
+	{
+		workblock = (__mm_block__*)malloc(sizeof(__mm_block__));
+		if (!workblock) return 0;
+		workblock->cur_offset = 0;
+		workblock->units_used = 0;
+		_mm_last_allocated_block_ = workblock;
+		_mm_really_alloc_ += sizeof(__mm_block__);
+	}
+	workblock = _mm_last_allocated_block_;
+
+	workblock->units_used++;
+	MM_UNITNAME(MM_TEMPLATE)* unit = (MM_UNITNAME(MM_TEMPLATE) * )(&workblock->data[workblock->cur_offset]);
+	workblock->cur_offset += size;
+
 	unit->busy = 1;
 	unit->size = size;
 	unit->canary = MM_CANARY_VAL;
 	_mm_global_alloc_ += size;
 	unit->type_id = type_id;
+	unit->hdr = workblock;
 	return (void*)MM_DATA_PTR(unit);
 }
 
 void _mm_free_(void* ptr)
 {
 	MM_UNITNAME(MM_TEMPLATE)* unit;
+	__mm_block__* workblock;
 
 	if (ptr)
 	{
@@ -60,11 +78,17 @@ void _mm_free_(void* ptr)
 		_mm_callback_(ptr, CANARY_DEAD);
 		return;
 	}
+	workblock = unit->hdr;
+	workblock->units_used--;
+	_mm_global_alloc_ -= (unit->size);
 	unit->busy = 0;
 	unit->type_id = -1;
 	unit->canary = 0;
-	_mm_global_alloc_ -= unit->size;
-	free((void*)unit);
+	if (!(workblock->units_used))
+	{
+		free(workblock);
+		_mm_really_alloc_ -= sizeof(__mm_block__);
+	}
 }
 
 int _mm_compare_(void* ptr1, void* ptr2)
