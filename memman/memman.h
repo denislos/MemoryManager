@@ -37,6 +37,7 @@ typedef struct
 {
 	size_t cur_offset;
 	int units_used;
+	char data[MM_BLOCKSIZE];
 } __mm_block__;
 
 #define MM_UNITSTR(type) typedef struct \
