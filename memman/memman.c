@@ -25,6 +25,7 @@ void mm_init()
 	_mm_callback_ =_mm_default_callback_;
 	_mm_global_alloc_ = 0;
 	_mm_really_alloc_ = 0;
+	_mm_last_allocated_block_ = 0;
 }
 
 void* _mm_alloc_(size_t size, int type_id)
