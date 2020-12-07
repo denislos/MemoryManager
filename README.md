@@ -5,7 +5,7 @@
 ## API
 
 #### `Callback funсtion` ####
-If any runtime problem appears, this function called to signal user about error. Default function just prints address and error code, after which calls exit(). 
+If any runtime problem appears, this function is called to signal user about error. Default function just prints address and error code, after which calls exit(). 
 
 You can change it by calling `void mm_attach_callback(void (*callback)(void* addr, int code))`.
 
@@ -39,8 +39,8 @@ MM_DEALLOC(d);
 ````
 
 Can call callback function if:
-* called to MM_NULLPTR
-* called to already dealloced pointer
+* invoked with MM_NULLPTR
+* invoked with already dealloced pointer
 #### `type* MM_DEREF(ptr, type)` ####
 Endeavors to convert a type of pointer `ptr` to type* and returns a converted pointer in case of success. If types are not compatible, termination routine is called.
 
