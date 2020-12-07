@@ -4,8 +4,14 @@
 extern "C" {
 #endif
 
-static void (*_mm_callback_)(void* addr, int code);
-static unsigned int _mm_global_alloc_, _mm_really_alloc_ = 0;
+static void _mm_default_callback_(void* addr, int code)
+{
+	printf("Memory Manager error addr %p code %d", addr, code);
+	exit(code);
+}
+
+static void (*_mm_callback_)(void* addr, int code) = _mm_default_callback_;
+static unsigned int _mm_global_alloc_ = 0, _mm_really_alloc_ = 0;
 static __mm_block__* _mm_last_allocated_block_ = 0;
 size_t _mm_type_global_counter = 0u;
 
@@ -14,18 +20,13 @@ void mm_attach_callback(void (*callback)(void* addr, int code))
 	_mm_callback_ = callback;
 }
 
-static void _mm_default_callback_(void* addr, int code)
-{
-	printf("Memory Manager error addr %p code %d", addr, code);
-	exit(code);
-}
 
 void mm_init()
 {
-	_mm_callback_ =_mm_default_callback_;
-	_mm_global_alloc_ = 0;
+	//_mm_callback_ =_mm_default_callback_;
+	//_mm_global_alloc_ = 0;
 	//_mm_really_alloc_ = 0;
-	_mm_last_allocated_block_ = 0;
+	//_mm_last_allocated_block_ = 0;
 }
 
 void* _mm_alloc_(size_t size, int type_id)
