@@ -161,7 +161,6 @@ int _mm_verify_(void* ptr, int type_id)
 
 	if (unit->canary != MM_CANARY_VAL)
 	{
-        printf("AAAA\n");
 		_mm_callback_(ptr, CANARY_DEAD);
 		return 0;
 	}
