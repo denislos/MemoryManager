@@ -50,7 +50,7 @@ typedef struct
 	size_t size;\
 	int canary;\
 	type data;\
-} MM_UNITNAME(type);
+} __attribute__((packed)) MM_UNITNAME(type) ;
 
 typedef void* MM_TEMPLATE;
 MM_UNITSTR(MM_TEMPLATE);
