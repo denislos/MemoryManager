@@ -1,4 +1,4 @@
-# MemoryManager
+# MemoryManager MyTest
 
 `memman` is a fast C library that enables smart memory allocation, type checking, memory leakage and memory bounds checking. 
 
